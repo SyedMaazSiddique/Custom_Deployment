@@ -10,7 +10,14 @@
 
     - name: Extract users based on password status and exclusions
       set_fact:
-        users_to_expire: "{{ passwd_content.stdout | split('\n') | select('match', '^[^:]+:.*:[^:]*[KCI][^:]*:') | select('match', '^((?!cp6ipat1|qualys|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq).)*$') | map('regex_replace', '^(.*):.*$', '\\1') | list }}"
+        users_to_expire: >-
+          {{
+            passwd_content.stdout.split('\n') | 
+            select('match', '^[^:]+:.*:[^:]*[KCI][^:]*:') | 
+            select('match', '^((?!cp6ipat1|qualys|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq).)*$') | 
+            map('regex_replace', '^(.*):.*$', '\\1') | 
+            list
+          }}
 
     - name: Display users to expire
       debug:
