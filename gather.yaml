@@ -10,3 +10,11 @@
     - name: Display filtered users
       debug:
         var: filtered_users.stdout_lines
+    - name: Expire passwords of filtered users
+      user:
+        name: "{{ item.split(':')[0] }}"
+        password_expire: yes
+      loop: "{{ filtered_users.stdout_lines }}"
+      when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
+
+          
