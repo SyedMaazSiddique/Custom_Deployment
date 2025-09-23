@@ -1,13 +1,18 @@
 ---
-- name: Gather and display /etc/passwd file content from all servers
+- name: Gather and display regular users from /etc/passwd on all servers
   hosts: all
   become: yes  # Ensure to run with elevated privileges if necessary
   tasks:
-    - name: Display content of /etc/passwd file
+    - name: Get the content of /etc/passwd file
       command: cat /etc/passwd
       register: passwd_content
       changed_when: false  # Prevent Ansible from marking it as a change
 
-    - name: Output /etc/passwd content to stdout
+    - name: Extract regular users (UID >= 1000)
+      set_fact:
+        regular_users: "{{ passwd_content.stdout | split('\n') | select('match', '^([^:]+):[^:]+:[1-9][0-9]{3,}:') | map('regex_replace', '^(.*):.*$', '\\1') | list }}"
+
+    - name: Output regular users to stdout
       debug:
-        msg: "{{ passwd_content.stdout }}"
+        msg: "{{ regular_users }}"
+
