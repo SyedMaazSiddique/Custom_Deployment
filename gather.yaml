@@ -1,0 +1,13 @@
+---
+- name: Gather and display /etc/passwd file content from all servers
+  hosts: all
+  become: yes  # Ensure to run with elevated privileges if necessary
+  tasks:
+    - name: Display content of /etc/passwd file
+      command: cat /etc/passwd
+      register: passwd_content
+      changed_when: false  # Prevent Ansible from marking it as a change
+
+    - name: Output /etc/passwd content to stdout
+      debug:
+        msg: "{{ passwd_content.stdout }}"
