@@ -10,7 +10,7 @@
       lineinfile:
         path: /etc/pam.d/system-auth
         regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4'
+        line: 'password    required                                pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
         state: present
         backup: yes
 
@@ -19,7 +19,7 @@
       lineinfile:
         path: /etc/pam.d/password-auth
         regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4'
+        line: 'password    required                                pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
         state: present
         backup: yes
 
@@ -29,7 +29,7 @@
         path: /etc/pam.d/system-auth
         regexp: '^\s*password\s+required\s+pam_cracklib.so'
         state: absent
-        backup: yes
+        
 
     # Step 4: Remove pam_cracklib.so from /etc/pam.d/password-auth
     - name: Remove pam_cracklib.so from /etc/pam.d/password-auth
@@ -37,7 +37,7 @@
         path: /etc/pam.d/password-auth
         regexp: '^\s*password\s+required\s+pam_cracklib.so'
         state: absent
-        backup: yes
+  
 
     # Step 5: Ensure enforce_for_root is set in /etc/security/pwquality.conf
     - name: Ensure enforce_for_root is set in /etc/security/pwquality.conf
@@ -48,20 +48,4 @@
         state: present
         backup: yes
 
-    # Step 6: Ensure enforce_for_root is in pam_pwquality configuration for root password policy in /etc/pam.d/system-auth
-    - name: Ensure enforce_for_root is in pam_pwquality configuration for root password policy in /etc/pam.d/system-auth
-      lineinfile:
-        path: /etc/pam.d/system-auth
-        regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
-        state: present
-        backup: yes
-
-    # Step 7: Ensure enforce_for_root is in pam_pwquality configuration for root password policy in /etc/pam.d/password-auth
-    - name: Ensure enforce_for_root is in pam_pwquality configuration for root password policy in /etc/pam.d/password-auth
-      lineinfile:
-        path: /etc/pam.d/password-auth
-        regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
-        state: present
-        backup: yes
+    
