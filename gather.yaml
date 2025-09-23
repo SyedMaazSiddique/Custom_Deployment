@@ -1,29 +1,12 @@
 ---
-- name: Expire passwords for users based on specific conditions
+- name: Filter Linux Users Playbook
   hosts: all
-  become: yes  # Ensure to run with elevated privileges if necessary
-  gather_facts: no  # Disable fact gathering
+  become: yes
   tasks:
-    - name: Get content of /etc/passwd
-      command: cat /etc/passwd
-      register: passwd_content
-      changed_when: false  # Prevent Ansible from marking it as a change
+    - name: Filter users from /etc/passwd
+      shell: "grep -E '^[^:]+:.*:[^:]*[KCI][^:]*:' /etc/passwd | grep -v -E '^(cp6ipat1|qualys|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq):'"
+      register: filtered_users
 
-    - name: Debugging: Show result of cat /etc/passwd
+    - name: Display filtered users
       debug:
-        msg: "{{ passwd_content.stdout }}"
-        
-    - name: Extract users based on password status and exclusions
-      set_fact:
-        users_to_expire: >-
-          {{
-            passwd_content.stdout.split('\n') | 
-            select('match', '^[^:]+:.*:[^:]*[KCI][^:]*:') | 
-            select('match', '^((?!cp6ipat1|qualys|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq).)*$') | 
-            map('regex_replace', '^(.*):.*$', '\\1') | 
-            list
-          }}
-
-    - name: Display users to expire
-      debug:
-        msg: "{{ users_to_expire }}"
+        var: filtered_users.stdout_lines
