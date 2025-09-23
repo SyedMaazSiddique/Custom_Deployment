@@ -11,11 +11,16 @@
       debug:
         var: filtered_users.stdout_lines
     - name: Expire passwords of filtered users
-      user:
-        name: "{{ item.split(':')[0] }}"
-        password_expire: yes
-      loop: "{{ filtered_users.stdout_lines }}"
-      when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
-      
+  shell: |
+    chage -d 0 {{ item.split(':')[0] }}
+  loop: "{{ filtered_users.stdout_lines }}"
+  when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
+  register: chage_results
+  ignore_errors: yes  # Ignore errors if any user command fails
+
+- name: Display results of password expiry
+  debug:
+    msg: "{{ chage_results }}"
+  when: chage_results is defined
 
           
