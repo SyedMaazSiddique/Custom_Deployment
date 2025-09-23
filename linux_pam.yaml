@@ -10,7 +10,7 @@
       lineinfile:
         path: /etc/pam.d/system-auth
         regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required                                pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
+        line: 'password    required                                    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
         state: present
         backup: yes
 
@@ -19,7 +19,7 @@
       lineinfile:
         path: /etc/pam.d/password-auth
         regexp: '^password\s+required\s+pam_pwquality.so'
-        line: 'password    required                                pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
+        line: 'password    required                                    pam_pwquality.so retry=3 minlen=15 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minclass=4 enforce_for_root'
         state: present
         backup: yes
 
