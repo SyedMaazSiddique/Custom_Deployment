@@ -1,6 +1,7 @@
 ---
 - name: Expire passwords for users based on specific conditions
   hosts: all
+  gather_facts: no  # Disable fact gathering
   become: yes  # Ensure to run with elevated privileges if necessary
   tasks:
     - name: Get content of /etc/passwd
