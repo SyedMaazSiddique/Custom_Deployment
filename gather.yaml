@@ -1,14 +1,18 @@
 ---
 - name: Expire passwords for users based on specific conditions
   hosts: all
-  gather_facts: no  # Disable fact gathering
   become: yes  # Ensure to run with elevated privileges if necessary
+  gather_facts: no  # Disable fact gathering
   tasks:
     - name: Get content of /etc/passwd
       command: cat /etc/passwd
       register: passwd_content
       changed_when: false  # Prevent Ansible from marking it as a change
 
+    - name: Debugging: Show result of cat /etc/passwd
+      debug:
+        msg: "{{ passwd_content.stdout }}"
+        
     - name: Extract users based on password status and exclusions
       set_fact:
         users_to_expire: >-
@@ -23,4 +27,3 @@
     - name: Display users to expire
       debug:
         msg: "{{ users_to_expire }}"
-
