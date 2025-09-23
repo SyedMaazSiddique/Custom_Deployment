@@ -1,18 +1,18 @@
 ---
-- name: Gather and display regular users from /etc/passwd on all servers
+- name: Expire passwords for users based on specific conditions
   hosts: all
   become: yes  # Ensure to run with elevated privileges if necessary
   tasks:
-    - name: Get the content of /etc/passwd file
+    - name: Get content of /etc/passwd
       command: cat /etc/passwd
       register: passwd_content
       changed_when: false  # Prevent Ansible from marking it as a change
 
-    - name: Extract regular users (UID >= 1000)
+    - name: Extract users based on password status and exclusions
       set_fact:
-        regular_users: "{{ passwd_content.stdout | split('\n') | select('match', '^([^:]+):[^:]+:[1-9][0-9]{3,}:') | map('regex_replace', '^(.*):.*$', '\\1') | list }}"
+        users_to_expire: "{{ passwd_content.stdout | split('\n') | select('match', '^[^:]+:.*:[^:]*[KCI][^:]*:') | select('match', '^((?!cp6ipat1|qualys|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq).)*$') | map('regex_replace', '^(.*):.*$', '\\1') | list }}"
 
-    - name: Output regular users to stdout
+    - name: Display users to expire
       debug:
-        msg: "{{ regular_users }}"
+        msg: "{{ users_to_expire }}"
 
