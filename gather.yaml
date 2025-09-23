@@ -16,5 +16,6 @@
         password_expire: yes
       loop: "{{ filtered_users.stdout_lines }}"
       when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
+      
 
           
