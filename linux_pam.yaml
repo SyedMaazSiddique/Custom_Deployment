@@ -1,6 +1,6 @@
 ---
 - name: Update PAM configuration for password policies and enforce root password policy
-  hosts: vnhlpr1rep001.ssas.local
+  hosts: all
   become: yes
   tasks:
 
