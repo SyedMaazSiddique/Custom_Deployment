@@ -10,17 +10,19 @@
     - name: Display filtered users
       debug:
         var: filtered_users.stdout_lines
-    - name: Expire passwords of filtered users
-  shell: |
-    chage -d 0 {{ item.split(':')[0] }}
-  loop: "{{ filtered_users.stdout_lines }}"
-  when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
-  register: chage_results
-  ignore_errors: yes  # Ignore errors if any user command fails
-
-- name: Display results of password expiry
-  debug:
-    msg: "{{ chage_results }}"
-  when: chage_results is defined
-
+    - name: Save filtered users to a file
+      copy: 
+        content: "{{ filtered_users.stdout }}"
+        dest: /tmp/filtered_users.txt  
+        mode: '0644'
+    - name: Expire passwords for filtered users
+      shell: "chage -d 0 {{ item }}"
+      loop: "{{ filtered_users.stdout_lines }}"
+      when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
+      ignore_errors: yes
+    - name: Notify if no users found
+      debug:
+        msg: "No users found matching the criteria."
+      when: filtered_users.stdout_lines is not defined or filtered_users.stdout_lines | length == 0
+      ignore_errors: yes
           
