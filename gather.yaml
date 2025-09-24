@@ -16,7 +16,7 @@
         dest: /tmp/filtered_users.txt  
         mode: '0644'
     - name: Expire passwords for filtered users
-      shell: "chage -d 0 {{ item }}"
+      shell: "chage -d 0 {{ item.split(':')[0] }}"
       loop: "{{ filtered_users.stdout_lines }}"
       when: filtered_users.stdout_lines is defined and filtered_users.stdout_lines | length > 0
       ignore_errors: yes
