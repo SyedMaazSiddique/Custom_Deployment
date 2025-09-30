@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Filter users from /etc/passwd
-      shell: "grep -E '^[^:]+:.*:[^:]*[KCI][^:]*:' /etc/passwd | grep -v -E '^(cp6ipat1|qualys|servicenow_sshuser|unxqscan_fmo|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|dnsmasq):'"
+      shell: "grep -E '^[^:]+:.*:[^:]*[KCI][^:]*:' /etc/passwd | grep -v -E '^(cp6ipat1|qualys|servicenow_sshuser|unxqscan_fmo|unxqscan|unixsa|nobody|systemd-coredump|clevis|idadmin|rpcuser|dnsmasq):'"
       register: filtered_users
 
     - name: Display filtered users
